@@ -1,4 +1,4 @@
-@extends('plants.app')
+@extends('layouts.app')
 
 @section('content')
     <h1>Daftar Tanaman</h1>
@@ -17,6 +17,7 @@
                 <th>Nama</th>
                 <th>Spesies</th>
                 <th>Deskripsi</th>
+                <th>Stok</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -27,6 +28,7 @@
                     <td>{{ $plant->name }}</td>
                     <td>{{ $plant->species }}</td>
                     <td>{{ $plant->description }}</td>
+                    <td>{{ $plant->stock ? $plant->stock->quantity : 0 }}</td>
                     <td>
                         <a href="{{ route('plants.show', $plant->id) }}" class="btn btn-info btn-sm">Lihat</a>
                         <a href="{{ route('plants.edit', $plant->id) }}" class="btn btn-warning btn-sm">Edit</a>
@@ -35,6 +37,7 @@
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin?')">Hapus</button>
                         </form>
+                        <a href="{{ route('plants.add-stock', $plant->id) }}" class="btn btn-success btn-sm">Tambah Stok</a>
                     </td>
                 </tr>
             @endforeach

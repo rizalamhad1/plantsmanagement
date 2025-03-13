@@ -59,4 +59,40 @@ class PlantController extends Controller
         $plant->delete();
         return redirect()->route('plants.index')->with('success', 'Tanaman berhasil dihapus.');
     }
+    public function addStock(Request $request, $plantId)
+{
+    $plant = Plant::findOrFail($plantId);
+
+    // Validasi input
+    $request->validate([
+        'quantity' => 'required|integer|min:1',
+    ]);
+
+    // Update atau buat stok
+    $stock = $plant->stock ?? new Stock(['plant_id' => $plant->id]);
+    $stock->quantity += $request->quantity;
+    $stock->save();
+
+    return redirect()->route('plants.index')->with('success', 'Stok berhasil ditambahkan.');
+}
+public function reduceStock(Request $request, $plantId)
+{
+    $plant = Plant::findOrFail($plantId);
+
+    // Validasi input
+    $request->validate([
+        'quantity' => 'required|integer|min:1',
+    ]);
+
+    // Pastikan stok cukup
+    $stock = $plant->stock;
+    if ($stock && $stock->quantity >= $request->quantity) {
+        $stock->quantity -= $request->quantity;
+        $stock->save();
+    } else {
+        return redirect()->back()->with('error', 'Stok tidak mencukupi.');
+    }
+
+    return redirect()->route('plants.index')->with('success', 'Stok berhasil dikurangi.');
+}
 }
